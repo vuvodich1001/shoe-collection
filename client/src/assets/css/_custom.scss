@@ -1,0 +1,18 @@
+.btn-main {
+  color: #fff;
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+
+.btn-main:focus {
+  color: #fff;
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 0.2rem rgba(243, 139, 70, 0.5);
+}
+
+.btn-main:hover {
+  color: #fff;
+  // background-color: #aa5c28;
+  // border-color: #aa5c28;
+}
