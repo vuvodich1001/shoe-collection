@@ -30,38 +30,13 @@
           </div>
           <div class="col-lg-6">
             <div class="mt-2">
-              <p class="m-0" style="font-size: 1.5rem">Nike Air Force {{id}}</p>
+              <p class="m-0" style="font-size: 1.5rem">{{mainShoe.name}}</p>
               <div class="d-flex align-items-center">
-                <span class="text-danger" style="font-size: 1.3rem">200.000 đ</span>
+                <span class="text-danger" style="font-size: 1.3rem">{{formatPrice(mainShoe.price)}}</span>
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
                 <a class="text-secondary" href="#comment" @click="showComment()">Đã nhận 2 đánh giá</a>
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
                 <span class="text-secondary"> Đã bán 5</span>
-              </div>
-              <div class="d-flex my-2">
-                <span class="text-secondary">Size giay</span>
-                <div class="ml-2">
-                  <input type="radio" name="size" id="36" v-model="size" value="36" hidden>
-                  <label for="36" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('36')}" style="font-size: 15px;">36</label>
-
-                  <input type="radio" name="size" id="37" v-model="size" value="37" hidden>
-                  <label for="37" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('37')}" style="font-size: 15px;">37</label>
-
-                  <input type="radio" name="size" id="38" v-model="size" value="38" hidden>
-                  <label for="38" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('38')}" style="font-size: 15px;">38</label>
-
-                  <input type="radio" name="size" id="39" v-model="size" value="39" hidden>
-                  <label for="39" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('39')}" style="font-size: 15px;">39</label>
-
-                  <input type="radio" name="size" id="40" v-model="size" value="40" hidden>
-                  <label for="40" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('40')}" style="font-size: 15px;">40</label>
-
-                  <input type="radio" name="size" id="41" v-model="size" value="41" hidden>
-                  <label for="41" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('41')}" style="font-size: 15px;">41</label>
-
-                  <input type="radio" name="size" id="42" v-model="size" value="42" hidden>
-                  <label for="42" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick('42')}" style="font-size: 15px;">42</label>
-                </div>
               </div>
               <div class="row my-3">
                 <div class="col-md-2 px-2">
@@ -73,7 +48,16 @@
                   <label for="color-2"><img src="@/assets/images/air-force-1-black.jpg" alt="image" class="rounded main-image" style="object-fit: contain;"></label>
                 </div>
               </div>
-              <p class="text-primary my-2 size-direction" @click="showDirection()">Bảng quy đổi kích cỡ ></p>
+              <div class="d-flex my-2 align-items-center">
+                <p class="text-secondary mb-0">Size giay</p>
+                <div class="ml-2">
+                  <span v-for="(value, index) in mainShoe.detail" :key="index">
+                    <input type="radio" name="size" :id="value.size" v-model="size" :value="value.size" hidden>
+                    <label :for="value.size" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick(value.size)}" style="font-size: 15px;">{{value.size}}</label>
+                  </span>
+                </div>
+              </div>
+              <p class="text-primary mb-3 size-direction" @click="showDirection()">Bảng quy đổi kích cỡ ></p>
               <div class="quantity mt-1">
                 <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-minus"></i></button>
                 <span class="d-inline-block mx-2 font-weight-bold">1</span>
@@ -111,21 +95,7 @@
             <div class="tab-content">
               <div class="tab-pane container mt-1 p-0" :class="{active: checkTab('description')}" id="description">
                 <div class="text-justify" style="line-height: 30px;">
-                  The radiance lives on in the Nike Air Force 1 '07, the b-ball OG that puts a fresh spin on what you know best: durably stitched overlays, clean finishes and the perfect amount of flash to make you shine.
-                  <br><strong>Benefits</strong><br>
-                  The stitched overlays on the upper add heritage style, durability and support.
-                  Originally designed for performance hoops, the Nike Air cushioning adds lightweight, all-day comfort.
-                  The low-cut silhouette adds a clean, streamlined look.
-                  The padded collar feels soft and comfortable.
-                  Product Details
-                  <br><strong>Foam midsole</strong><br>
-                  Perforations on the toe
-                  Rubber sole
-                  Colour Shown: White/White
-                  Style: CW2288-111
-                  Country/Region of Origin: Vietnam,India
-                  Air Force 1 Origins
-                  Debuting in 1982, the AF-1 was the first basketball shoe to house Nike Air, revolutionising the game while rapidly gaining traction around the world. Today, the Air Force 1 stays true to its roots with the same soft and springy cushioning that changed sneaker history.
+                  {{mainShoe.description}}
                 </div>
               </div>
               <div class="tab-pane container mt-1 p-0" :class="{active: checkTab('policy')}" id="policy">
@@ -207,6 +177,8 @@ import Shoe from '@/components/Shoe.vue';
 import Breadcrumb from '@/components/ui/Breadcrumb.vue';
 import Comment from '@/components/ui/Comment.vue';
 import SizeModal from '@/components/ui/SizeModal.vue';
+import { shoeService } from '@/services';
+import { formatPrice } from '@/utils';
 
 export default {
   name: 'Detail',
@@ -216,44 +188,22 @@ export default {
     }
   },
   components: { Shoe, Breadcrumb, Comment, SizeModal },
+  created() {
+    this.getShoeById(this.id);
+  },
   data() {
     return {
+      mainShoe: {
+        name: 'test',
+        price: 123456
+      },
       shoes: [
         {
           id: 1,
           name: 'Katrine Braun',
           brand: 'vans',
-          gender: 'female',
-          size: '41',
-          color: 'black',
+          category: 'sport',
           price: 2551410
-        },
-        {
-          id: 2,
-          name: 'Prof. Demond Leannon',
-          brand: 'addidas',
-          gender: 'female',
-          size: '42',
-          color: 'black',
-          price: 2447250
-        },
-        {
-          id: 3,
-          name: 'Everardo Turcotte PhD',
-          brand: 'addidas',
-          gender: 'male',
-          size: '37',
-          color: 'black',
-          price: 1227641
-        },
-        {
-          id: 4,
-          name: 'Everardo Turcotte PhD',
-          brand: 'addidas',
-          gender: 'male',
-          size: '37',
-          color: 'black',
-          price: 1227641
         }
       ],
       tab: 'description',
@@ -265,6 +215,7 @@ export default {
     };
   },
   methods: {
+    formatPrice,
     addToCart() {
       if (!this.size || !this.color) {
         alert('Bạn chưa chọn size hoặc color !!!');
@@ -297,6 +248,11 @@ export default {
     },
     showComment() {
       this.tab = 'comment';
+    },
+    async getShoeById(id) {
+      let res = await shoeService.find(id);
+      this.mainShoe = res.data.shoe;
+      console.log(this.mainShoe);
     }
   }
 };

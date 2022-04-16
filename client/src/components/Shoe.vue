@@ -11,14 +11,14 @@
           <i class="d-inline-block mx-1 far fa-star"></i>
         </div>
         <h5 class="card-title text-truncate text-dark my-1 font-weight-normal" style="font-size: 1.1rem;">
-          {{shoeProp.brand}} | {{shoeProp.size}}</h5>
+          {{shoeProp.name}}</h5>
         <p class="card-text d-flex align-items-center justify-content-center">
           <span class="shoe-price text-danger">{{formatPrice(shoeProp.price)}}</span>
           <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
-          <!-- <span class="text-secondary"> Đã bán 0</span> -->
-          <span class="text-secondary"> {{shoeProp.gender}}</span>
-          <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
-          <span class="text-secondary"> {{shoeProp.color}}</span>
+          <span class="text-secondary"> Đã bán 0</span>
+          <!-- <span class="text-secondary"> {{shoeProp.gender}}</span> -->
+          <!-- <span class="d-inline-block mx-2 h-100 text-secondary">|</span> -->
+          <!-- <span class="text-secondary"> {{shoeProp.color}}</span> -->
         </p>
       </div>
     </div>
@@ -31,7 +31,17 @@ export default {
   name: 'Shoe',
   props: ['shoeProp'],
   methods: {
-    formatPrice
+    formatPrice,
+    changeFormatColor(listDetails) {
+      return listDetails.reduce((acc, val) => {
+        return acc + ' ' + val.color;
+      }, '');
+    },
+    changeFormatSize(listDetails) {
+      return listDetails.reduce((acc, val) => {
+        return acc + ' ' + val.size;
+      }, '');
+    }
   }
 };
 </script>
