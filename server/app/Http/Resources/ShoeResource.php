@@ -19,6 +19,8 @@ class ShoeResource extends JsonResource {
             'description' => $this->description,
             'brand' => $this->brand->name,
             'category' => $this->category->name,
+            'defaultImage' => $this->colors()->where('default', 1)->select('image')->first(),
+            'subImage' => $this->colors()->select('colors.name', 'image', 'default')->get(),
             'detail' => DetailResource::collection($this->shoeDetails),
         ];
     }

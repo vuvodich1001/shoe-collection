@@ -41,50 +41,46 @@ class ShoeController extends Controller {
     }
 
     public function store(Request $request) {
-        // $file = $request->image;
-        // $fileName = time() . '-' . $file->getClientOriginalName();
-        // $destinationPath = public_path('uploads');
-        // $file->move($destinationPath, $fileName);
-        // // C1
-        // $fileStore = config('filesystems.imagePath') . '/' . $fileName;
-        // // C2
-        // // $fileStore = asset('uploads/'.$fileName);
-        // $shoe = $this->shoeRepository->create([
-        //     'name' => $request->name,
-        //     'brand' => $request->brand,
-        //     'color' => $request->color,
-        //     'size' => $request->size,
-        //     'gender' => $request->gender,
-        //     'image' => $fileStore,
-        //     'price' => $request->price
-        // ]);
-        // return response()->json($shoe);
         try {
-            $shoe = Shoe::create([
-                'brand_id' => 2,
-                'category_id' => 2,
-                'description' => 'This is favourite shoe all over the world',
-                'price' => 500000,
-                'name' => 'Nike air force 2'
+            $file = $request->image;
+            $fileName = time() . '-' . $file->getClientOriginalName();
+            $destinationPath = public_path('uploads');
+            $file->move($destinationPath, $fileName);
+            // C1
+            $fileStore = config('filesystems.imagePath') . '/' . $fileName;
+            // C2
+            // $fileStore = asset('uploads/'.$fileName);
+            $shoe = $this->shoeRepository->create([
+                'brand_id' => $request->brand,
+                'category_id' => $request->category,
+                'description' =>  $request->description,
+                'price' => $request->price,
+                'name' => $request->name,
+                'gender' => $request->gender
             ]);
-
-            for ($i = 1; $i < 3; $i++) {
+            $shoe->images()->create([
+                'color_id' => $request->color,
+                'image' => $fileStore,
+                'image_short' => $fileName,
+                'default' => 1
+            ]);
+            foreach (json_decode($request->detail, true) as $detail) {
                 $shoe->shoeDetails()->create([
-                    'size_id' => $i + 1,
-                    'color_id' => $i + 1,
-                    'quantity' => 10,
+                    'size_id' => $detail['size'],
+                    'color_id' => $detail['color'],
+                    'quantity' => $detail['quantity'],
                     'stock' => 1
                 ]);
             }
-
             return response()->json([
                 'status' => true,
-                'shoe' => $shoe,
+                'shoe' => $shoe
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
-            ], 401);
+                'message' => $th->getMessage(),
+                'detail' => json_decode($request->detail, true)
+            ]);
         }
     }
 

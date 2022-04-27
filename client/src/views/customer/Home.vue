@@ -91,6 +91,7 @@ export default {
     async getTopShoes() {
       let res = await shoeService.all('limit=8');
       this.shoes = res.data.shoes;
+      console.log(this.shoes);
     }
   }
 };

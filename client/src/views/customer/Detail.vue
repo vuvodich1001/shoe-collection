@@ -203,7 +203,10 @@ export default {
           name: 'Katrine Braun',
           brand: 'vans',
           category: 'sport',
-          price: 2551410
+          price: 2551410,
+          defaultImage: {
+            image: null
+          }
         }
       ],
       tab: 'description',

@@ -15,8 +15,8 @@ class ShoeCollection extends ResourceCollection {
         return [
             'data' => $this->collection,
             'meta' => [
-                'total' => $this->total(),
-                'perPage' => $this->perPage(),
+                'total' => 7,
+                'perPage' => 8,
             ]
         ];
     }

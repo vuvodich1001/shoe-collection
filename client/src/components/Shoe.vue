@@ -1,7 +1,7 @@
 <template>
   <router-link :to="{name: 'detail', params: {id: shoeProp.id}}" class="item d-block mt-4">
     <div class="card border-0">
-      <img class="card-img-top p-1" :src="shoeProp.image ? shoeProp.image : require('@/assets/images/air-force-1.jpg')" alt="Card image cap">
+      <img class="card-img-top p-1" :src="shoeProp.defaultImage.image ? shoeProp.defaultImage.image : require('@/assets/images/air-force-1.jpg')" alt="Card image cap">
       <div class="card-body text-center p-2">
         <div class="comment-rating text-warning">
           <i class="d-inline-block mx-1 fas fa-star"></i>

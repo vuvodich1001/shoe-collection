@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Shoe extends Model {
     use HasFactory;
 
-    protected $fillable = ['brand_id', 'category_id', 'name', 'description', 'price'];
+    protected $fillable = ['brand_id', 'category_id', 'name', 'gender', 'description', 'price'];
+
+    protected $hidden = ['pivot'];
 
     public function brand() {
         return $this->belongsTo(Brand::class);
@@ -32,5 +34,9 @@ class Shoe extends Model {
 
     public function shoeDetails() {
         return $this->hasMany(ShoeDetail::class);
+    }
+
+    public function colors() {
+        return $this->belongsToMany(Color::class, 'images')->withPivot('image', 'image_short', 'default');
     }
 }
