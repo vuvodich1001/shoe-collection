@@ -69,11 +69,11 @@ export default {
     },
     async storeUser() {
       await userService.create(this.user);
-      this.$router.push({ name: 'user' });
+      this.$router.push({ name: 'user.index' });
     },
     async updateUser(id) {
       await userService.update(id, this.user);
-      this.$router.push({ name: 'user' });
+      this.$router.push({ name: 'user.index' });
     },
     async getUserById(id) {
       let res = await userService.find(id);

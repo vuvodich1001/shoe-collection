@@ -42,14 +42,6 @@ class ShoeController extends Controller {
 
     public function store(Request $request) {
         try {
-            $file = $request->image;
-            $fileName = time() . '-' . $file->getClientOriginalName();
-            $destinationPath = public_path('uploads');
-            $file->move($destinationPath, $fileName);
-            // C1
-            $fileStore = config('filesystems.imagePath') . '/' . $fileName;
-            // C2
-            // $fileStore = asset('uploads/'.$fileName);
             $shoe = $this->shoeRepository->create([
                 'brand_id' => $request->brand,
                 'category_id' => $request->category,
@@ -58,13 +50,29 @@ class ShoeController extends Controller {
                 'name' => $request->name,
                 'gender' => $request->gender
             ]);
-            $shoe->images()->create([
-                'color_id' => $request->color,
-                'image' => $fileStore,
-                'image_short' => $fileName,
-                'default' => 1
-            ]);
-            foreach (json_decode($request->detail, true) as $detail) {
+
+            $length = count($request->colors);
+            $colors = $request->colors;
+            $images = $request->images;
+            $checkDefaultImage = [];
+            for ($i = 0; $i < $length; $i++) {
+                $file = $images[$i];
+                $fileName = time() . '-' . $file->getClientOriginalName();
+                $destinationPath = public_path('uploads');
+                $file->move($destinationPath, $fileName);
+                // C1
+                $fileStore = config('filesystems.imagePath') . '/' . $fileName;
+                // C2
+                // $fileStore = asset('uploads/'.$fileName);
+                $shoe->images()->create([
+                    'color_id' => $colors[$i],
+                    'image' => $fileStore,
+                    'image_short' => $fileName,
+                    'default' => in_array($colors[$i], $checkDefaultImage) ? 0 : 1
+                ]);
+                in_array($colors[$i], $checkDefaultImage) ? '' : $checkDefaultImage[] = $colors[$i];
+            }
+            foreach (json_decode($request->details, true) as $detail) {
                 $shoe->shoeDetails()->create([
                     'size_id' => $detail['size'],
                     'color_id' => $detail['color'],
@@ -79,7 +87,8 @@ class ShoeController extends Controller {
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
-                'detail' => json_decode($request->detail, true)
+                'detail' => json_decode($request->details, true),
+                'image' => json_decode($request->images, true)
             ]);
         }
     }

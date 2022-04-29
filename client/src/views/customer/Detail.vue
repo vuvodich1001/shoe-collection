@@ -16,13 +16,8 @@
               </div>
               <div class="col-lg-12">
                 <div class="row sm-gutter mt-3">
-                  <div class="col-lg-3 p-1"><img src="@/assets/images/air-force-1.jpg" @click="changeImageSrc" alt="image" class="sub-image w-100 px-2 py-0 rounded sub-image-active">
-                  </div>
-                  <div class="col-lg-3 p-1"><img src="@/assets/images/air-force-1-07.png" @click="changeImageSrc" alt="image" class="sub-image w-100 px-2 py-0 rounded">
-                  </div>
-                  <div class="col-lg-3 p-1"><img src="@/assets/images/air-force-1-08.png" @click="changeImageSrc" alt="image" class="sub-image w-100 px-2 py-0 rounded">
-                  </div>
-                  <div class="col-lg-3 p-1"><img src="@/assets/images/air-force-1-09.png" @click="changeImageSrc" alt="image" class="sub-image w-100 px-2 py-0 rounded">
+                  <div v-for="(image, index) in getExtraImageByColor" :key="index" class="col-lg-3 p-1">
+                    <img :src="image.image" @click="changeImageSrc" alt="image" class="sub-image w-100 px-2 py-0 rounded sub-image-active">
                   </div>
                 </div>
               </div>
@@ -39,19 +34,15 @@
                 <span class="text-secondary"> Đã bán 5</span>
               </div>
               <div class="row my-3">
-                <div class="col-md-2 px-2">
-                  <input type="radio" name="color" value="white" v-model="color" id="color-1" hidden>
-                  <label for="color-1"><img src="@/assets/images/air-force-1.jpg" alt="image" class="rounded main-image" style="object-fit: contain;"></label>
-                </div>
-                <div class="col-md-2 px-2">
-                  <input type="radio" name="color" value="black" v-model="color" id="color-2" hidden>
-                  <label for="color-2"><img src="@/assets/images/air-force-1-black.jpg" alt="image" class="rounded main-image" style="object-fit: contain;"></label>
+                <div v-for="(value, index) in getDefaultImage" :key="index" class="col-md-2 px-2">
+                  <input type="radio" name="color" :value="value.color" v-model="color" :id="index" hidden>
+                  <label :for="index"><img :src="value.image" @click="changeImageSrc" alt="image" class="rounded main-image" style="object-fit: contain;"></label>
                 </div>
               </div>
               <div class="d-flex my-2 align-items-center">
                 <p class="text-secondary mb-0">Size giay</p>
                 <div class="ml-2">
-                  <span v-for="(value, index) in mainShoe.detail" :key="index">
+                  <span v-for="(value, index) in getSizeByColor" :key="index">
                     <input type="radio" name="size" :id="value.size" v-model="size" :value="value.size" hidden>
                     <label :for="value.size" class="m-1 btn btn-outline-secondary btn-sm" :class="{'btn-size--active': checkSizeTick(value.size)}" style="font-size: 15px;">{{value.size}}</label>
                   </span>
@@ -185,6 +176,17 @@ export default {
   computed: {
     id() {
       return this.$route.params.id;
+    },
+    getDefaultImage() {
+      return this.mainShoe.subImage.filter((value) => value.default == 1);
+    },
+    getExtraImageByColor() {
+      return this.mainShoe.subImage.filter(
+        (value) => value.color == this.color
+      );
+    },
+    getSizeByColor() {
+      return this.mainShoe.detail.filter((value) => value.color == this.color);
     }
   },
   components: { Shoe, Breadcrumb, Comment, SizeModal },
@@ -194,8 +196,9 @@ export default {
   data() {
     return {
       mainShoe: {
-        name: 'test',
-        price: 123456
+        name: '',
+        price: 0,
+        subImage: []
       },
       shoes: [
         {
@@ -256,6 +259,8 @@ export default {
       let res = await shoeService.find(id);
       this.mainShoe = res.data.shoe;
       console.log(this.mainShoe);
+      this.imageSrc = this.mainShoe.defaultImage.image;
+      this.color = this.mainShoe.detail[0].color;
     }
   }
 };
