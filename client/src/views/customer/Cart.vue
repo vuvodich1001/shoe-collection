@@ -27,7 +27,7 @@
                   <span class="d-inline-block ml-2 badge badge-warning">{{c.size}}</span>
                 </div>
               </td>
-              <td><img src="@/assets/images/air-force-1.jpg" alt="" class="rounded d-inline" style="height: 110px; width: 110px; object-fit: cover;"></td>
+              <td><img :src="c.shoe.defaultImage.image" alt="" class="rounded d-inline" style="height: 110px; width: 110px; object-fit: cover;"></td>
               <td>
                 <button class="btn btn-sm btn-outline-secondary" @click="changeQuantity({id: c.shoe.id, type: 'decrease'})"><i class=" fas fa-minus"></i></button>
                 <span class="h5 d-inline-block p-2">{{c.quantity}}</span>

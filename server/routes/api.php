@@ -38,3 +38,5 @@ Route::apiResource('users', UserController::class);
 
 Route::apiResource('shoes', ShoeController::class);
 Route::apiResource('brands', BrandController::class);
+
+Route::get('shoes/related-shoe/{id}', [ShoeController::class, 'getRelatedShoes']);

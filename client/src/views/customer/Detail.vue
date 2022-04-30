@@ -3,7 +3,7 @@
     <SizeModal v-show="isShowModal" @close-modal="closeModal()" />
     <div class="row">
       <div class="col-lg-12">
-        <Breadcrumb :breads="['Home', 'Detail']" />
+        <Breadcrumb :breads="['Home', 'Detail', id]" />
       </div>
     </div>
     <div class="row">
@@ -25,6 +25,11 @@
           </div>
           <div class="col-lg-6">
             <div class="mt-2">
+              <div>
+                <span class="mr-1 badge badge-success">{{mainShoe.brand}}</span>
+                <span class="mx-1 badge badge-info">{{mainShoe.gender}}</span>
+                <span class="mx-1 badge badge-primary">{{mainShoe.category}}</span>
+              </div>
               <p class="m-0" style="font-size: 1.5rem">{{mainShoe.name}}</p>
               <div class="d-flex align-items-center">
                 <span class="text-danger" style="font-size: 1.3rem">{{formatPrice(mainShoe.price)}}</span>
@@ -91,14 +96,14 @@
               </div>
               <div class="tab-pane container mt-1 p-0" :class="{active: checkTab('policy')}" id="policy">
                 <div class="text-justify" style="line-height: 30px;">
-                  QUY ĐỊNH CHUNG <br>
+                  <i>Quy định chung:</i> <br>
 
                   Chấp nhận được đổi size, không đổi kiểu. Chỉ được đổi kiểu trong trường hợp sản phẩm đó không còn size trên toàn hệ thống.
                   Trường hợp đổi sản phẩm khác có chênh lệch giá, khách hàng sẽ thanh toán thêm phần chênh lệch thiếu và Hạ Vàng sẽ không hoàn trả phần chênh lệch dư;
                   Giá của sản phẩm đã mua là giá trên hóa đơn; giá của sản phẩm đổi là giá niêm yết tại thời điểm đổi hàng.
                   CHÍNH SÁCH ĐỔI TRẢ
 
-                  <br>Đối tượng áp dụng<br>
+                  <br><i>Đối tượng áp dụng</i><br>
 
                   Sản phẩm Furla & Geox: hàng giảm giá từ dưới 40%;
                   Các sản phẩm giày dép trong nhóm sản phẩm ShooZ (Native, Flossy, Free-Water, Clae, Vionic, Flossy,XOX,): hàng giảm giá từ dưới 30%;
@@ -106,11 +111,11 @@
 
                   Trong vòng 7 ngày tính từ ngày khách nhận được hàng, đến ngày Hạ Vàng nhận được sản phẩm đổi trả từ khách hàng (không tính trên dấu bưu điện hoặc thời gian đăng ký hoàn trả)
 
-                  <br>Đối tượng không được áp dụng<br>
+                  <br><i>Đối tượng không được áp dụng</i><br>
 
                   Phụ kiện thời trang, bóp, ví, bình nước, chăm sóc vệ sinh giày
                   Các sản phẩm đồng giá, phụ kiện thời trang, bình nước, shucare, quà tặng trong chương trình khuyến mãi.
-                  <br>Điều kiện đổi:<br>
+                  <br><i>Điều kiện đổi:</i><br>
 
                   Sản phẩm còn nguyên tem, nhãn, túi vải và hộp giấy và bao bì có dán mã sản phẩm của Hạ Vàng.
                   Sản phẩm không có dấu hiệu đã qua sử dụng hay giặt, không bị dơ bẩn. (khi thử sản phẩm giày dép, khách hàng nên mang vớ và thử giày trên bề mặt sạch),
@@ -192,26 +197,17 @@ export default {
   components: { Shoe, Breadcrumb, Comment, SizeModal },
   created() {
     this.getShoeById(this.id);
+    this.getRelatedShoes(this.id);
   },
   data() {
     return {
       mainShoe: {
         name: '',
         price: 0,
-        subImage: []
+        subImage: [],
+        detail: []
       },
-      shoes: [
-        {
-          id: 1,
-          name: 'Katrine Braun',
-          brand: 'vans',
-          category: 'sport',
-          price: 2551410,
-          defaultImage: {
-            image: null
-          }
-        }
-      ],
+      shoes: [],
       tab: 'description',
       isAddToCart: false,
       isShowModal: false,
@@ -258,9 +254,13 @@ export default {
     async getShoeById(id) {
       let res = await shoeService.find(id);
       this.mainShoe = res.data.shoe;
-      console.log(this.mainShoe);
       this.imageSrc = this.mainShoe.defaultImage.image;
       this.color = this.mainShoe.detail[0].color;
+      console.log(this.mainShoe);
+    },
+    async getRelatedShoes(id) {
+      let res = await shoeService.shoeRelated(id);
+      this.shoes = res.data.shoes;
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{name: 'detail', params: {id: shoeProp.id}}" class="item d-block mt-4">
+  <router-link :to="{name: 'detail', params: {id: shoeProp.id}}" @click="changeShoeDetail()" class="item d-block mt-4">
     <div class="card border-0">
       <img class="card-img-top p-1" :src="shoeProp.defaultImage.image ? shoeProp.defaultImage.image : require('@/assets/images/air-force-1.jpg')" alt="Card image cap">
       <div class="card-body text-center p-2">
@@ -41,6 +41,9 @@ export default {
       return listDetails.reduce((acc, val) => {
         return acc + ' ' + val.size;
       }, '');
+    },
+    changeShoeDetail() {
+      this.$forceUpdate();
     }
   }
 };

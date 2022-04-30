@@ -61,4 +61,14 @@ class ShoeRepository extends BaseRepository implements ShoeRepositoryInterface {
         $limit = $request->limit ?? config('paginate.per_page');
         return $shoes->paginate($limit);
     }
+
+    public function getRelatedShoes($id) {
+        $category = $this->find($id)->category->name;
+        $shoes = $this->model->query();
+        $shoes->whereHas('category', function ($query) use ($category) {
+            $query->where('name', $category);
+        });
+        $limit = config('paginate.per_page');
+        return $shoes->paginate($limit);
+    }
 }

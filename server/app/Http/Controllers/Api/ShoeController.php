@@ -127,4 +127,21 @@ class ShoeController extends Controller {
             ]);
         }
     }
+
+    public function getRelatedShoes($id) {
+        try {
+            $shoes = $this->shoeRepository->getRelatedShoes($id);
+            return response()->json([
+                'status' => true,
+                'message' => Response::HTTP_OK,
+                'shoes' => ShoeResource::collection($shoes->items())
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
 }

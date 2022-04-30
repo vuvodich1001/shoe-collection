@@ -20,9 +20,7 @@
       <div class="form-group row">
         <label for="" class="col-md-2">Brand</label>
         <select name="brand" id="brand" v-model="shoe.brand" class="form-control col-md-1">
-          <option value="1">nike</option>
-          <option value="2">adidas</option>
-          <option value="3">vans</option>
+          <option v-for="(brand, index) in brands" :key="index" :value="brand.id">{{brand.name}}</option>
         </select>
       </div>
       <div class="form-group row">
@@ -38,16 +36,16 @@
         <label for="" class="col-md-2">Description</label>
         <input type="text" name="description" id="description" v-model.trim="shoe.description" class="col-md-4 form-control">
       </div>
-      <div v-for="(details, index) in shoe.details" :key="index" class="form-group row">
+      <div v-for="(detail, index) in shoe.details" :key="index" class="form-group row">
         <label for="" class="col-md-2">Group {{index+1}}</label>
-        <select name="color" id="color" v-model="details.color" class="form-control col-md-1">
+        <select name="color" id="color" v-model="detail.color" class="form-control col-md-1">
           <option value="1">black</option>
           <option value="2">white</option>
           <option value="3">blue</option>
           <option value="4">yellow</option>
           <option value="5">red</option>
         </select>
-        <select name="size" id="size" class="ml-1 form-control col-md-1" v-model="details.size">
+        <select name="size" id="size" class="ml-1 form-control col-md-1" v-model="detail.size" @change="checkDuplicateGroup(index)">
           <option value="1">36</option>
           <option value="2">37</option>
           <option value="3">38</option>
@@ -57,7 +55,7 @@
           <option value="7">42</option>
           <option value="8">43</option>
         </select>
-        <input type="number" min="10" name="quantity" placeholder="quantity" id="quantity" v-model.trim="details.quantity" class="ml-1 col-md-1 form-control">
+        <input type="number" min="10" name="quantity" placeholder="quantity" id="quantity" v-model.trim="detail.quantity" class="ml-1 col-md-1 form-control">
         <button @click.prevent="increaseSize()" class="ml-2 btn btn-sm btn-primary">+</button>
         <button @click.prevent="decreaseSize(index)" class="ml-2 btn btn-sm btn-danger">-</button>
       </div>
@@ -69,7 +67,9 @@
         <img v-for="(imageSrc, index) in imageSrcs" :key="index" :src="imageSrc" alt="image" class="col-md-2" style="height: 100px; width: 130px; object-fit:contain;">
       </div>
       <div v-for="(imageShoe, index) in shoe.images" :key="index" class="form-group row">
-        <label for="" class="col-md-2">Image {{index + 1}}</label>
+        <label for="" class="col-md-2">Image {{index + 1}}
+          <span v-if="index==0" class="label-default">default</span>
+        </label>
         <input type="file" multiple name="image" :id="index" @change="onImageChange($event, index)" class="col-md-4 form-control" hidden>
         <select name="color" id="color" v-model="imageShoe.color" class="form-control col-md-1">
           <option value="1">black</option>
@@ -91,11 +91,13 @@
 
 <script>
 import { shoeService } from '@/services';
+import { brandService } from '@/services';
 export default {
   name: 'ProductForm',
   data() {
     return {
       errors: [],
+      brands: [],
       shoe: {
         name: '',
         brand: 0,
@@ -126,6 +128,7 @@ export default {
     if (id) {
       this.getShoeById(id);
     }
+    this.getAllBrands();
     // this.initValue();
   },
   methods: {
@@ -178,7 +181,7 @@ export default {
     async storeShoe(formData) {
       let res = await shoeService.create(formData);
       console.log(res.data);
-      // this.$router.push({ name: 'shoe.index' });
+      this.$router.push({ name: 'shoe.index' });
     },
     async updateShoe(id) {
       await shoeService.update(id, this.shoe);
@@ -188,6 +191,10 @@ export default {
       let res = await shoeService.find(id);
       this.shoe = res.data.shoe;
       console.log(this.shoe);
+    },
+    async getAllBrands() {
+      let res = await brandService.all();
+      this.brands = res.data.brands;
     },
     increaseSize() {
       this.shoe.details.push({
@@ -218,6 +225,18 @@ export default {
         image: '',
         color: 0
       });
+    },
+    checkDuplicateGroup(index) {
+      let size = this.shoe.details[index].size;
+      let color = this.shoe.details[index].color;
+      console.log(size, color);
+      let check = this.shoe.details.reduce((acc, value) => {
+        return value.size == size && value.color == color ? acc + 1 : acc;
+      }, 0);
+      if (check > 1) {
+        alert('Color and size are ready existed !!!');
+        this.shoe.details[index].size = 0;
+      }
     },
     initValue() {
       this.shoe = {
@@ -262,5 +281,14 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.label-default {
+  padding: 2px;
+  background-color: var(--success);
+  color: var(--white-color);
+  border-radius: 4px;
+  font-size: 11px;
+  position: relative;
+  top: -10px;
+}
 </style>
