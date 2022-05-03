@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -16,17 +18,39 @@ class AuthController extends Controller {
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['adminLogin', 'adminRegister', 'customerLogin', 'customerRegister']]);
     }
 
+    public function customerLogin(Request $request) {
+        Config::set('auth.providers.users.model', Customer::class);
+        $credentials = $request->only('email', 'password');
+        $token = null;
+        try {
+            if (!$token = Auth::attempt($credentials)) {
+                return response()->json([
+                    'error' => true
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
+
+        return $this->createNewToken($token);
+    }
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request) {
-        if (!$token = Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['error' => true]);
+    public function adminLogin(Request $request) {
+        Config::set('auth.providers.users.model', User::class);
+        $credentials = $request->only('email', 'password');
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(
+                ['error' => true]
+            );
         }
 
         return $this->createNewToken($token);
@@ -37,7 +61,28 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
+    public function customerRegister(Request $request) {
+        try {
+            $user = Customer::create(
+                [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password)
+                ]
+            );
+            return response()->json([
+                'message' => 'User successfully registered',
+                'user' => $user,
+                'code' => Response::HTTP_OK
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function adminRegister(Request $request) {
         $user = User::create(
             [
                 'name' => $request->name,
@@ -53,15 +98,22 @@ class AuthController extends Controller {
         ]);
     }
 
-
     /**
      * Log the user out (Invalidate the token).
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout() {
-        Auth::logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        try {
+            Auth::logout();
+            return response()->json([
+                'message' => 'User successfully signed out'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**

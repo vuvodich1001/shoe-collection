@@ -26,10 +26,10 @@
       <div class="form-group row">
         <label for="" class="col-md-2">Gender</label>
         <div class="col-md-4">
-          <input type="radio" name="gender" value="male" v-model.trim="shoe.gender">
-          <span class="mx-2">Male</span>
-          <input type="radio" name="gender" value="female" v-model.trim="shoe.gender" class="ml-2">
-          <span class="mx-2">Female</span>
+          <input type="radio" name="gender" value="male" id="male" v-model.trim="shoe.gender">
+          <label for="male" class="mx-2">Male</label>
+          <input type="radio" name="gender" value="female" id="female" v-model.trim="shoe.gender" class="ml-2">
+          <label for="female" class="mx-2">Female</label>
         </div>
       </div>
       <div class="form-group row">
@@ -188,8 +188,14 @@ export default {
       this.$router.push({ name: 'shoe.index' });
     },
     async getShoeById(id) {
-      let res = await shoeService.find(id);
+      let res = await shoeService.findShoe(id);
       this.shoe = res.data.shoe;
+      this.shoe.images = [
+        {
+          image: '',
+          color: 0
+        }
+      ];
       console.log(this.shoe);
     },
     async getAllBrands() {

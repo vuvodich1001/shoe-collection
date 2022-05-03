@@ -10,9 +10,9 @@ use App\Models\Customer;
 class Address extends Model {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'first_name', 'last_name', 'line1', 'line2', 'city', 'country', 'phone'];
+    protected $fillable = ['customer_id', 'name', 'line1', 'line2', 'city', 'country', 'phone', 'default'];
 
-    public function order() {
+    public function orders() {
         return $this->hasMany(Order::class);
     }
 

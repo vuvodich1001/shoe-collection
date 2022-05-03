@@ -1,5 +1,12 @@
 import { createStore } from 'vuex';
 import { shoeService } from '@/services';
+import createPersistedState from 'vuex-persistedstate';
+const persistValue = function (state) {
+  let vuex = JSON.parse(sessionStorage.getItem('vuex'));
+  vuex.cart = state.cart;
+  sessionStorage.setItem('vuex', JSON.stringify(vuex));
+};
+
 export default createStore({
   state: {
     user: null,
@@ -40,11 +47,17 @@ export default createStore({
           }
         });
       }
+      persistValue(state);
     },
     removeCartItem(state, payload) {
       state.cart = state.cart.filter((value) => {
         return value.shoe.id != payload;
       });
+      persistValue(state);
+    },
+    removeCart(state) {
+      state.cart = [];
+      persistValue(state);
     },
     changeQuantity(state, payload) {
       state.cart.forEach((value) => {
@@ -56,6 +69,7 @@ export default createStore({
             : '';
         }
       });
+      persistValue(state);
     },
     setShoeInfo(state, payload) {
       state.shoeInfo = payload;
@@ -74,6 +88,9 @@ export default createStore({
     removeCartItem({ commit }, id) {
       commit('removeCartItem', id);
     },
+    removeCart({ commit }) {
+      commit('removeCart');
+    },
     changeQuantity({ commit }, payload) {
       commit('changeQuantity', payload);
     },
@@ -81,5 +98,6 @@ export default createStore({
       commit('setShoeInfo', payload);
     }
   },
-  modules: {}
+  modules: {},
+  plugins: [createPersistedState({ storage: window.sessionStorage })]
 });

@@ -19,8 +19,8 @@ class ShoeRepository extends BaseRepository implements ShoeRepositoryInterface {
         $model->whereHas('shoeDetails', function ($query) use ($attributes, $attributeName) {
             $query->with($attributeName)->whereHas($attributeName, function ($query) use ($attributes) {
                 $query->where(function ($query) use ($attributes) {
-                    foreach ($attributes as $color) {
-                        $query->orWhere('name', $color);
+                    foreach ($attributes as $attr) {
+                        $query->orWhere('name', $attr);
                     }
                 });
             });
@@ -51,12 +51,13 @@ class ShoeRepository extends BaseRepository implements ShoeRepositoryInterface {
         }
         if ($size) {
             $this->filter($shoes, $size, 'size');
+            // dd($shoes->toSql());
         }
         if ($product) {
             $shoes->where('name', 'like', '%' . $product . '%');
         }
-        if ($request->sortby) {
-            $shoes->orderByRaw($request->sortby);
+        if ($sortby) {
+            $shoes->orderByRaw($sortby);
         }
         $limit = $request->limit ?? config('paginate.per_page');
         return $shoes->paginate($limit);

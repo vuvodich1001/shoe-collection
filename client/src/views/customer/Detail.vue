@@ -191,7 +191,7 @@ export default {
       );
     },
     getSizeByColor() {
-      return this.mainShoe.detail.filter((value) => value.color == this.color);
+      return this.mainShoe.details.filter((value) => value.color == this.color);
     }
   },
   components: { Shoe, Breadcrumb, Comment, SizeModal },
@@ -205,7 +205,7 @@ export default {
         name: '',
         price: 0,
         subImage: [],
-        detail: []
+        details: []
       },
       shoes: [],
       tab: 'description',
@@ -213,14 +213,14 @@ export default {
       isShowModal: false,
       size: 0,
       color: '',
-      imageSrc: require('@/assets/images/air-force-1.jpg')
+      imageSrc: ''
     };
   },
   methods: {
     formatPrice,
     addToCart() {
-      if (!this.size || !this.color) {
-        alert('Bạn chưa chọn size hoặc color !!!');
+      if (!this.size) {
+        alert('Bạn chưa chọn size !!!');
         return;
       }
       this.isAddToCart = true;
@@ -255,7 +255,7 @@ export default {
       let res = await shoeService.find(id);
       this.mainShoe = res.data.shoe;
       this.imageSrc = this.mainShoe.defaultImage.image;
-      this.color = this.mainShoe.detail[0].color;
+      this.color = this.mainShoe.details[0].color;
       console.log(this.mainShoe);
     },
     async getRelatedShoes(id) {

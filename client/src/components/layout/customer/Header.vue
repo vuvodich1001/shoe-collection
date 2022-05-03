@@ -18,14 +18,14 @@
                   <li class="nav-item-head">
                     <router-link class="nav-item-link ml-5" to="/product">Cửa hàng</router-link>
                   </li>
-                  <li class="nav-item-head">
+                  <li class="nav-item-head" v-if="user">
                     <a class="nav-item-link ml-5">
                       Tài Khoản
                       <i class="fa-solid fa-angle-down"></i>
                     </a>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item" href="myacount.html">Tài Khoản</a>
-                      <a class="dropdown-item" href="purchase-order.html">Đơn đặt hàng</a>
+                      <router-link class="dropdown-item" :to="{name: 'profile'}">Tài Khoản</router-link>
+                      <router-link class="dropdown-item" :to="{name: 'order'}">Đơn đặt hàng</router-link>
                       <a class="dropdown-item" href="review.html">Đánh giá sản phẩm</a>
                       <a class="dropdown-item" href="" @click.prevent="logout()">Đăng xuất</a>
                     </div>

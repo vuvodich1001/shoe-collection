@@ -49,9 +49,6 @@ export default {
   methods: {
     async login() {
       let res = await authService.login(this.user);
-      if (localStorage.getItem('token')) {
-        return;
-      }
       if (res.data.user) {
         localStorage.setItem('token', res.data.access_token);
         this.$store.dispatch('login', res.data.user);

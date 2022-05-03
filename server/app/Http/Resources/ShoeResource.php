@@ -17,12 +17,12 @@ class ShoeResource extends JsonResource {
             'name' => $this->name,
             'price' => $this->price,
             'description' => $this->description,
-            'brand' => $this->brand->name,
-            'category' => $this->category->name,
+            'brand' => $request->method == 'update' ? $this->brand->id : $this->brand->name,
+            'category' => $request->method == 'update' ? $this->category->id : $this->category->name,
             'gender' => $this->gender,
             'defaultImage' => $this->colors()->where('default', 1)->select('image')->orderBy('images.id', 'asc')->first(),
             'subImage' => $this->colors()->select('colors.name as color', 'image', 'default')->orderBy('images.id', 'asc')->get(),
-            'detail' => DetailResource::collection($this->shoeDetails),
+            'details' => DetailResource::collection($this->shoeDetails),
         ];
     }
 }

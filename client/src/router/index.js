@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '../store';
 import routesAdmin from './admin.js';
 import routesDefault from './default.js';
 
@@ -53,6 +54,8 @@ router.beforeEach((to, from, next) => {
     } else {
       next({ name: 'login', params: {} });
     }
+  } else if (to.name == 'login' && store.state.user) {
+    next({ name: 'home', params: {} });
   } else {
     next();
   }

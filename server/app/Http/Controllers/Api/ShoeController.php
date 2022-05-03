@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Shoe;
 use App\Repositories\Shoe\ShoeRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\ShoeResource;
@@ -111,9 +110,9 @@ class ShoeController extends Controller {
         return response()->json($shoe);
     }
 
-    public function show($id) {
+    public function show(Request $request) {
         try {
-            $shoe = $this->shoeRepository->find($id);
+            $shoe = $this->shoeRepository->find($request->shoe);
             return response()->json([
                 'status' => true,
                 'message' => Response::HTTP_OK,

@@ -9,7 +9,8 @@
           <th scope="col">#</th>
           <th scope="col">Name</th>
           <th scope="col">Brand</th>
-          <!-- <th scope="col">Gender</th> -->
+          <th scope="col">Category</th>
+          <th scope="col">Gender</th>
           <th scope="col">Size</th>
           <th scope="col">Color</th>
           <th scope="col">Action</th>
@@ -18,11 +19,12 @@
       <tbody>
         <tr v-for="(shoe, index) in shoes" :key="index">
           <th scope="row">{{shoe.id}}</th>
-          <td>{{shoe.name}}</td>
+          <td style="max-width: 200px;">{{shoe.name}}</td>
           <td>{{shoe.brand}}</td>
-          <!-- <td>{{shoe.gender}}</td> -->
-          <td><span v-for="(value, index) in shoe.detail" :key="index">{{index == shoe.detail.length-1 ? value.size : value.size + '-' }}</span></td>
-          <td><span v-for="(value, index) in shoe.detail" :key="index">{{index == shoe.detail.length-1 ? value.color : value.color + '-' }}</span></td>
+          <td>{{shoe.category}}</td>
+          <td>{{shoe.gender}}</td>
+          <td><span v-for="(value, index) in shoe.details" :key="index">{{index == shoe.details.length-1 ? value.size : value.size + '-' }}</span></td>
+          <td><span v-for="(value, index) in shoe.details" :key="index">{{index == shoe.details.length-1 ? value.color : value.color + '-' }}</span></td>
           <td>
             <button class="btn btn-sm btn-danger" @click="confirmDeleteCar(shoe.id)">Delete</button>
             <button class="ml-2 btn btn-sm btn-info" @click="updateCar(shoe.id)">Update</button>

@@ -12,11 +12,11 @@
           <div class="mt-3 sort-group">
             <p class="mb-2 font-weight-bold">Gender</p>
             <div class="sort-body m-2">
-              <div>
+              <div class="m-1">
                 <input type="checkbox" name="gender" id="male" value="male" v-model="genders">
                 <label for="male" class=" d-inline-block ml-3">Nam</label>
               </div>
-              <div>
+              <div class="m-1">
                 <input type="checkbox" name="gender" id="female" value="female" v-model="genders">
                 <label for="female" class="d-inline-block ml-3">Nữ</label>
               </div>
@@ -25,17 +25,9 @@
           <div class="mt-3 sort-group">
             <p class="mb-2 font-weight-bold">Brand</p>
             <div class="sort-body m-2">
-              <div>
-                <input type="checkbox" name="brand" id="nike" value="nike" v-model="brands">
-                <label for="nike" class="d-inline-block ml-3">Nike</label>
-              </div>
-              <div>
-                <input type="checkbox" name="brand" id="adidas" value="adidas" v-model="brands">
-                <label for="adidas" class="d-inline-block ml-3">Adidas</label>
-              </div>
-              <div>
-                <input type="checkbox" name="brand" id="vans" value="vans" v-model="brands">
-                <label for="vans" class="d-inline-block ml-3">Vans</label>
+              <div v-for="(brandItem, index) in listBrands" :key="index">
+                <input type="radio" name="brand" :id="brandItem.name" :value="brandItem.name" v-model="brand">
+                <label :for="brandItem.name" class="d-inline-block ml-3">{{brandItem.name}}</label>
               </div>
             </div>
           </div>
@@ -137,6 +129,7 @@
 
 <script>
 import { shoeService } from '@/services';
+import { brandService } from '@/services';
 import Shoe from '@/components/Shoe.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 import Breadcrumb from '@/components/ui/Breadcrumb.vue';
@@ -148,14 +141,15 @@ export default {
       url: '',
       shoes: [],
       genders: [],
-      brands: [],
+      brand: '',
       colors: [],
       sizes: [],
       sortby: '',
       paginate: {
         currentPage: 0,
         lastPage: 0
-      }
+      },
+      listBrands: []
     };
   },
   components: { Shoe, Breadcrumb, Pagination },
@@ -163,6 +157,9 @@ export default {
     ...mapState(['shoeInfo'])
   },
   created() {
+    //get brands
+    this.getAllBrands();
+    //
     let gender = this.$route.query.gender;
     let brand = this.$route.query.brand;
     let color = this.$route.query.color;
@@ -172,7 +169,7 @@ export default {
       this.genders = this.genders.concat(gender.split(','));
     }
     if (brand) {
-      this.brands = this.brands.concat(brand.split(','));
+      this.brand = brand;
     }
     if (color) {
       this.colors = this.colors.concat(color.split(','));
@@ -199,6 +196,10 @@ export default {
     checkSizeTick(size) {
       return this.sizes.includes(size);
     },
+    async getAllBrands() {
+      let res = await brandService.all();
+      this.listBrands = res.data.brands;
+    },
     async getShoes(queryParams, page = 1) {
       let res = await shoeService.all(queryParams, page);
       this.shoes = res.data.shoes;
@@ -215,10 +216,12 @@ export default {
         let gender = 'gender=' + this.genders.join(',');
         this.url += gender;
       }
-      if (this.brands.length != 0) {
-        let brand = 'brand=' + this.brands.join(',');
-        this.url == '' ? (this.url += brand) : (this.url += `&${brand}`);
+
+      if (this.brand) {
+        let br = 'brand=' + this.brand;
+        this.url == '' ? (this.url += br) : (this.url += `&${br}`);
       }
+
       if (this.colors.length != 0) {
         let color = 'color=' + this.colors.join(',');
         this.url == '' ? (this.url += color) : (this.url += `&${color}`);
@@ -243,7 +246,7 @@ export default {
     genders() {
       this.commonChange();
     },
-    brands() {
+    brand() {
       this.commonChange();
     },
     colors() {
@@ -256,8 +259,9 @@ export default {
       this.commonChange();
     },
     shoeInfo() {
-      this.brands = [];
-      this.brands.push(this.shoeInfo.brand);
+      // this.brands = [];
+      // this.brands.push(this.shoeInfo.brand);
+      this.brand = this.shoeInfo.brand;
     }
   }
 };
@@ -326,5 +330,11 @@ input[type='checkbox'] {
   &:checked::before {
     transform: scale(0.8);
   }
+}
+// custom radio
+input[type='radio'] {
+  background-color: #fff;
+  width: 1.15em;
+  height: 1.15em;
 }
 </style>

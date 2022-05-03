@@ -42,7 +42,8 @@
           <router-link to="/product"><i class="display-1 cart-blank fa-solid fa-cart-shopping"></i></router-link>
         </div>
         <router-link to="/checkout" v-if="cart.length > 0">
-          <button class="btn btn-outline-secondary float-right">Thanh toán</button>
+          <button v-if="user" class="btn btn-outline-secondary float-right">Thanh toán</button>
+          <router-link v-else class=" ml-1 btn btn-dark px-3 py-1 float-right" to="/login" style="border-radius: 25px;">Login for checkout</router-link>
         </router-link>
       </div>
 
@@ -84,8 +85,11 @@ export default {
   name: 'Cart',
   components: { Breadcrumb },
   computed: {
-    ...mapState(['cart']),
+    ...mapState(['cart', 'user']),
     ...mapGetters(['total'])
+  },
+  created() {
+    console.log(this.$store.state);
   },
   methods: {
     formatPrice,
