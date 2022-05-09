@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Customer;
-use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -18,11 +17,10 @@ class AuthController extends Controller {
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['adminLogin', 'adminRegister', 'customerLogin', 'customerRegister']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function customerLogin(Request $request) {
-        Config::set('auth.providers.users.model', Customer::class);
+    public function login(Request $request) {
         $credentials = $request->only('email', 'password');
         $token = null;
         try {
@@ -40,28 +38,11 @@ class AuthController extends Controller {
         return $this->createNewToken($token);
     }
     /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function adminLogin(Request $request) {
-        Config::set('auth.providers.users.model', User::class);
-        $credentials = $request->only('email', 'password');
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(
-                ['error' => true]
-            );
-        }
-
-        return $this->createNewToken($token);
-    }
-
-    /**
      * Register a User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function customerRegister(Request $request) {
+    public function register(Request $request) {
         try {
             $user = Customer::create(
                 [
@@ -81,23 +62,6 @@ class AuthController extends Controller {
             ]);
         }
     }
-
-    public function adminRegister(Request $request) {
-        $user = User::create(
-            [
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password)
-            ]
-        );
-
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user,
-            'code' => Response::HTTP_OK
-        ]);
-    }
-
     /**
      * Log the user out (Invalidate the token).
      *

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\EmailJob;
+use App\Models\Order;
 use App\Repositories\Order\OrderRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller {
     private $orderRepository;
@@ -18,7 +21,11 @@ class OrderController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        //
+        $orders = Order::all();
+        return response()->json([
+            'status' => true,
+            'orders' => $orders
+        ], 200);
     }
 
     /**
@@ -30,6 +37,13 @@ class OrderController extends Controller {
     public function store(Request $request) {
         try {
             $order = $this->orderRepository->createOrder($request);
+            $orderDetails = json_decode($request->orderDetails, true);
+            $fees = [
+                'subtotal' => $request->subtotal,
+                'shippingFee' => $request->shippingFee,
+                'total' => $request->total
+            ];
+            $this->dispatch(new EmailJob($orderDetails, $fees, $order->id, Auth::user()->email));
             return response()->json([
                 'status' => true,
                 'order' => $order
