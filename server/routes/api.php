@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ShoeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,9 +32,14 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::get('address/customer/{id}', [AddressController::class, 'getAddressByCustomerId']);
+    Route::get('orders/customer/{id}', [OrderController::class, 'getOrderByCustomerId']);
     Route::apiResource('orders', OrderController::class);
+    Route::apiResource('reviews', ReviewController::class);
 });
 
+Route::get('reviews/shoe/{id}', [ReviewController::class, 'getReviewsByShoeId']);
+
+Route::get('orders/order-detail/{id}', [OrderController::class, 'getOrderDetailByOrderId']);
 Route::apiResource('users', UserController::class);
 Route::apiResource('shoes', ShoeController::class);
 Route::apiResource('brands', BrandController::class);

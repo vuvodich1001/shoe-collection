@@ -3,30 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderResource;
-use App\Jobs\EmailJob;
-use App\Models\Order;
-use App\Repositories\Order\OrderRepositoryInterface;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OrderController extends Controller {
-    private $orderRepository;
-
-    public function __construct(OrderRepositoryInterface $orderRepository) {
-        $this->orderRepository = $orderRepository;
-    }
+class ReviewController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $orders = Order::all();
-        return response()->json([
-            'status' => true,
-            'orders' => $orders
-        ], 200);
+        //
     }
 
     /**
@@ -37,17 +25,25 @@ class OrderController extends Controller {
      */
     public function store(Request $request) {
         try {
-            $order = $this->orderRepository->createOrder($request);
-            $orderDetails = json_decode($request->orderDetails, true);
-            $fees = [
-                'subtotal' => $request->subtotal,
-                'shippingFee' => $request->shippingFee,
-                'total' => $request->total
-            ];
-            $this->dispatch(new EmailJob($orderDetails, $fees, $order->id, Auth::user()->email));
+            $file = $request->image;
+            $fileStore = '';
+            if (isset($file)) {
+                $fileName = time() . '-' . $file->getClientOriginalName();
+                $destinationPath = public_path('reviews');
+                $file->move($destinationPath, $fileName);
+                $fileStore = asset('reviews/' . $fileName);
+            }
+
+            $review = Review::create([
+                'customer_id' => Auth::user()->id,
+                'shoe_id' => $request->shoeId,
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+                'image' => empty($fileStore) ? '' : $fileStore
+            ]);
             return response()->json([
                 'status' => true,
-                'order' => $order
+                'review' => $review
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -88,28 +84,19 @@ class OrderController extends Controller {
         //
     }
 
-    public function getOrderByCustomerId($id) {
+    public function getReviewsByShoeId($id) {
         try {
-            $orders = $this->orderRepository->getOrderByCustomerId($id);
+            $reviews = Review::with('customer')->where('shoe_id', $id)->paginate(3);
             return response()->json([
                 'status' => true,
-                'orders' => $orders
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
+                'reviews' => $reviews->items(),
+                'meta' => [
+                    'total' => $reviews->total(),
+                    'perPage' => $reviews->perPage(),
+                    'currentPage' => $reviews->currentPage(),
+                    'lastPage' => $reviews->lastpage()
+                ]
             ]);
-        }
-    }
-
-    public function getOrderDetailByOrderId($id) {
-        try {
-            $orderDetails = $this->orderRepository->getOrderDetailByOrderId($id);
-            return response()->json([
-                'status' => true,
-                'orderDetails' => new OrderResource($orderDetails)
-            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

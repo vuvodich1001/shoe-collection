@@ -39,5 +39,6 @@ export default {
 .modal {
   display: block;
   background-color: rgba(0, 0, 0, 0.6);
+  transition: all linear 0.2s;
 }
 </style>

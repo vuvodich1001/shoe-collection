@@ -131,16 +131,13 @@
                     <div class="row mt-3">
                       <div class="col-lg-12">
                         <div class="d-flex align-items-center" id="review">
-                          <span style="font-size: 2.0rem">4.3</span>
+                          <span style="font-size: 2.0rem">{{totalReviewRating}}</span>
                           <div class="comment-rating mx-2 d-flex flex-column">
                             <div class="star text-warning ">
-                              <i class="fas fa-star"></i>
-                              <i class="mx-1 fas fa-star"></i>
-                              <i class="mx-1 fas fa-star"></i>
-                              <i class="mx-1 fas fa-star"></i>
-                              <i class="mx-1 far fa-star"></i>
+                              <!-- <i v-for="i in totalReviewRating" :key="i" class="mx-1 fas fa-star"></i>
+                              <i v-for="j in (5-totalReviewRating)" :key="j" class="mx-1 far fa-star"></i> -->
                             </div>
-                            <p class="m-0" style="font-size: 1.1rem;">2 đánh giá</p>
+                            <p class="m-0" style="font-size: 1.1rem;">{{paginate.total}} đánh giá</p>
                           </div>
                         </div>
                       </div>
@@ -148,7 +145,14 @@
 
                   </div>
                 </div>
-                <Comment v-for="i in 3" :key="i" />
+                <Comment v-for="(comment, index) in comments" :key="index" :detailComment="comment" />
+                <div v-if="paginate.lastPage > 1" class="row">
+                  <div class="col-lg-12">
+                    <div class="mt-5 pagination d-flex justify-content-end">
+                      <Pagination :currentPage="paginate.currentPage" :lastPage="paginate.lastPage" @click-handler="changePage" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -173,7 +177,9 @@ import Shoe from '@/components/Shoe.vue';
 import Breadcrumb from '@/components/ui/Breadcrumb.vue';
 import Comment from '@/components/ui/Comment.vue';
 import SizeModal from '@/components/ui/SizeModal.vue';
+import Pagination from '@/components/ui/Pagination.vue';
 import { shoeService } from '@/services';
+import { reviewService } from '@/services';
 import { formatPrice } from '@/utils';
 
 export default {
@@ -192,12 +198,22 @@ export default {
     },
     getSizeByColor() {
       return this.mainShoe.details.filter((value) => value.color == this.color);
+    },
+    totalReviewRating() {
+      if (!this.comments) return 0;
+      let length = this.comments.length;
+      let total = this.comments.reduce(
+        (acc, comment) => acc + comment.rating,
+        0
+      );
+      return Math.floor(total / length);
     }
   },
-  components: { Shoe, Breadcrumb, Comment, SizeModal },
+  components: { Shoe, Breadcrumb, Comment, SizeModal, Pagination },
   created() {
     this.getShoeById(this.id);
     this.getRelatedShoes(this.id);
+    this.getReviewsByShoeId(this.id);
   },
   data() {
     return {
@@ -207,13 +223,19 @@ export default {
         subImage: [],
         details: []
       },
+      comments: [],
       shoes: [],
       tab: 'description',
       isAddToCart: false,
       isShowModal: false,
       size: 0,
       color: '',
-      imageSrc: ''
+      imageSrc: '',
+      paginate: {
+        lastPage: 0,
+        currentPage: 0,
+        total: 0
+      }
     };
   },
   methods: {
@@ -261,6 +283,17 @@ export default {
     async getRelatedShoes(id) {
       let res = await shoeService.shoeRelated(id);
       this.shoes = res.data.shoes;
+    },
+    async getReviewsByShoeId(id, page = 0) {
+      let res = await reviewService.getReviewsByShoeId(id, page);
+      this.comments = res.data.reviews;
+      this.paginate.currentPage = res.data.meta.currentPage;
+      this.paginate.lastPage = res.data.meta.lastPage;
+      this.paginate.total = res.data.meta.total;
+    },
+    changePage(page) {
+      if (page != 0 && page != this.paginate.lastPage + 1)
+        this.getReviewsByShoeId(this.id, page);
     }
   }
 };

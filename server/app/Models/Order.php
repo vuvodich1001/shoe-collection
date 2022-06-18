@@ -17,4 +17,8 @@ class Order extends Model {
     public function shoes() {
         return $this->belongsToMany(Shoe::class, 'order_details')->withPivot('quantity', 'subtotal');
     }
+
+    public function address() {
+        return $this->belongsTo(Address::class);
+    }
 }

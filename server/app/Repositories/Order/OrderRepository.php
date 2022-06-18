@@ -45,7 +45,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 'city' => $customerAddress['city'],
                 'country' => 'Viet Nam',
                 'phone' => $customerAddress['phone'],
-                'default' => Address::find($customerId) ? 0 : 1
+                'default' => Address::where('customer_id', $customerId)->get() ? 0 : 1
             ]);
             $order = $address->orders()->create($orderInfo);
         }
@@ -63,7 +63,12 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     }
 
     public function getOrderByCustomerId($id) {
-        $order = $this->model->find($id);
+        $order = $this->model->where('customer_id', $id)->get();
         return $order;
+    }
+
+    public function getOrderDetailByOrderId($id) {
+        $orderDetails = $this->model->with('shoes')->where('id', $id)->first();
+        return $orderDetails;
     }
 }

@@ -11,4 +11,6 @@ interface OrderRepositoryInterface extends RepositoryInterface {
     public function createOrder(Request $request);
 
     public function getOrderByCustomerId($id);
+
+    public function getOrderDetailByOrderId($id);
 }

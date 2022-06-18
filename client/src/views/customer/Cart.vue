@@ -23,14 +23,14 @@
               <th>{{c.shoe.id}}</th>
               <td class="text-truncate" style="width: 200px;">{{c.shoe.name}}
                 <div>
-                  <span class="badge badge-info">{{c.color}}</span>
+                  <span class="badge" :class="[`badge-${mapColor(c.color)}`]">{{c.color}}</span>
                   <span class="d-inline-block ml-2 badge badge-warning">{{c.size}}</span>
                 </div>
               </td>
-              <td><img :src="c.shoe.defaultImage.image" alt="" class="rounded d-inline" style="height: 110px; width: 110px; object-fit: cover;"></td>
+              <td><img :src="c.shoe.defaultImage.image" alt="" class="rounded d-inline" style="width: 110px; object-fit: cover;"></td>
               <td>
                 <button class="btn btn-sm btn-outline-secondary" @click="changeQuantity({id: c.shoe.id, type: 'decrease'})"><i class=" fas fa-minus"></i></button>
-                <span class="h5 d-inline-block p-2">{{c.quantity}}</span>
+                <span class="h5 d-inline-block p-2 mx-1">{{c.quantity}}</span>
                 <button class="btn btn-sm btn-outline-secondary" @click="changeQuantity({id: c.shoe.id, type: 'increase'})"><i class="fas fa-plus"></i></button>
               </td>
               <td>{{formatPrice(c.shoe.price)}}</td>
@@ -99,6 +99,13 @@ export default {
     changeQuantity(payload) {
       console.log(payload);
       this.$store.dispatch('changeQuantity', payload);
+    },
+    mapColor(color) {
+      const colors = {
+        black: 'secondary',
+        white: 'light'
+      };
+      return colors[color];
     }
   }
 };

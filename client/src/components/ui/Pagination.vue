@@ -28,9 +28,10 @@ export default {
 
 <style lang="scss" scoped>
 .page-link {
+  background: var(--white-color);
   color: var(--black-color);
 }
-.active {
+.page-item.active {
   .page-link {
     background: var(--black-color);
     color: var(--white-color);
