@@ -7,3 +7,7 @@ export const uniqueArray = function (arr) {
     return arr.indexOf(value) == index;
   });
 };
+
+export const ucfirst = function (str) {
+  return str ? str[0].toUpperCase() + str.slice(1) : '';
+};

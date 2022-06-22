@@ -27,14 +27,14 @@
             <div class="mt-2">
               <div>
                 <span class="mr-1 badge badge-success">{{mainShoe.brand}}</span>
-                <span class="mx-1 badge badge-info">{{mainShoe.gender}}</span>
-                <span class="mx-1 badge badge-primary">{{mainShoe.category}}</span>
+                <span class="mx-1 badge badge-info">{{ucfirst(mainShoe.gender)}}</span>
+                <span class="mx-1 badge badge-primary">{{ucfirst(mainShoe.category)}}</span>
               </div>
               <p class="m-0" style="font-size: 1.5rem">{{mainShoe.name}}</p>
               <div class="d-flex align-items-center">
                 <span class="text-danger" style="font-size: 1.3rem">{{formatPrice(mainShoe.price)}}</span>
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
-                <a class="text-secondary" href="#comment" @click="showComment()">Đã nhận 2 đánh giá</a>
+                <a class="text-secondary" href="#comment" @click="showComment()">Đã nhận {{paginate.total}} đánh giá</a>
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
                 <span class="text-secondary"> Đã bán 5</span>
               </div>
@@ -83,7 +83,7 @@
               </li>
               <li class="nav-item">
                 <input type="radio" name="describe" value="comment" id="comment" hidden v-model="tab">
-                <label for="comment" class="nav-link" :class="{active: checkTab('comment')}">Đánh giá</label>
+                <label for="comment" class="nav-link" :class="{active: checkTab('comment')}">Đánh giá ({{paginate.total}})</label>
               </li>
             </ul>
 
@@ -181,6 +181,7 @@ import Pagination from '@/components/ui/Pagination.vue';
 import { shoeService } from '@/services';
 import { reviewService } from '@/services';
 import { formatPrice } from '@/utils';
+import { ucfirst } from '@/utils';
 
 export default {
   name: 'Detail',
@@ -221,7 +222,9 @@ export default {
         name: '',
         price: 0,
         subImage: [],
-        details: []
+        details: [],
+        category: '',
+        gender: ''
       },
       comments: [],
       shoes: [],
@@ -240,6 +243,7 @@ export default {
   },
   methods: {
     formatPrice,
+    ucfirst,
     addToCart() {
       if (!this.size) {
         alert('Bạn chưa chọn size !!!');

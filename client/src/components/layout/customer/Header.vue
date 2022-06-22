@@ -141,6 +141,7 @@ export default {
     logout() {
       authService.logout();
       this.$store.dispatch('logout');
+      this.$router.push({ name: 'home' });
     }
   }
 };

@@ -26,7 +26,7 @@
           <div class="col-lg-4">
             <div class="p-2 border border-info rounded bg-light h-100">
               <h5>Trạng thái giao hàng</h5>
-              <p class="text-success font-weight-bold">Giao hàng thành công</p>
+              <p class="text-success font-weight-bold">{{orderDetails.status}}</p>
             </div>
           </div>
         </div>
@@ -110,7 +110,6 @@ export default {
   },
   created() {
     this.getOrderDetailByOrderId(this.id);
-    console.log(this.id);
   },
   methods: {
     formatPrice,

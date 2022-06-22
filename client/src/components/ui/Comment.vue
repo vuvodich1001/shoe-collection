@@ -17,10 +17,10 @@
     <div class="col-lg-4">
       <div class="comment-group">
         <div class="comment-rating text-warning">
-          <i v-for="i in detailComment.rating" :key="i" class="mx-1 fas fa-star"></i>
-          <i v-for="j in (5-detailComment.rating)" :key="j" class="mx-1 far fa-star"></i>
+          <i v-for="i in detailComment.rating" :key="i" class="mr-2 fas fa-star"></i>
+          <i v-for="j in (5-detailComment.rating)" :key="j" class="mr-2 far fa-star"></i>
         </div>
-        <img :src="detailComment.image" alt="" class="rounded" style="width: 110px; object-fit: cover;">
+        <img :src="detailComment.image" alt="" class="my-2 rounded" style="width: 110px; object-fit: cover;">
         <div class="comment-body my-1">
           {{detailComment.comment}}
         </div>

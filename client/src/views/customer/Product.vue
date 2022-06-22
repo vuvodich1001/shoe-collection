@@ -10,6 +10,14 @@
         <div class="col-lg-3">
           <h4><i class="fas fa-list-ul"></i> Danh mục</h4>
           <div class="mt-3 sort-group">
+            <span class="text-secondary">Giúp lọc nhanh giày bạn tìm kiếm</span>
+            <div class="mt-2">
+              <span class="badge badge-light p-1 border rounded mr-2">{{brand}}</span>
+              <span class="badge badge-light p-1 border rounded mr-2" v-for="(color, index) in colors" :key="index"> {{color}}</span>
+              <span class="badge badge-light p-1 border rounded mr-2" v-for="(size, index) in sizes" :key="index"> {{size}}</span>
+            </div>
+          </div>
+          <div class="mt-3 sort-group">
             <p class="mb-2 font-weight-bold">Gender</p>
             <div class="sort-body m-2">
               <div class="m-1">

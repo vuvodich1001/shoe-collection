@@ -13,14 +13,14 @@
         <div class="item p-2 mt-4 d-flex justify-content-around align-items-center bg-light" style="font-size: 1.1rem;">
           <div class="d-flex align-items-center">
             <img :src="shoe.defaultImage.image" alt="" class="rounded" style="width: 110px; object-fit: cover;">
-            <div class="ml-2">
-              <span class="d-inline-block ml-2">{{shoe.name}}</span>
-              <div class="comment-rating text-warning">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="far fa-star"></i>
+            <div class="ml-3">
+              <span class="d-inline-block" style="max-width: 200px;">{{shoe.name}}</span>
+              <div class="mt-2 comment-rating text-warning">
+                <i class="mr-2 fas fa-star"></i>
+                <i class="mr-2 fas fa-star"></i>
+                <i class="mr-2 fas fa-star"></i>
+                <i class="mr-2 fas fa-star"></i>
+                <i class="mr-2 far fa-star"></i>
               </div>
             </div>
           </div>

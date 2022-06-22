@@ -64,11 +64,17 @@
 
         <h4>Phương thức thanh toán</h4>
         <ul class="list-group">
-          <li class="rounded list-group-item d-inline-block"><input type="radio" name="payment" value="COD" id="payment-1" v-model="paymentMethod">
-            <label for="payment-1" class="d-inline-block mb-0 ml-2">Thanh toán khi nhận hàng</label>
+          <li class="rounded list-group-item d-inline-block">
+            <label for="payment-1" class="d-block mb-0">
+              <input type="radio" name="payment" value="COD" id="payment-1" v-model="paymentMethod">
+              <span class="d-inline-block mb-0 ml-2">Thanh toán khi nhận hàng</span>
+            </label>
           </li>
-          <li class="mt-2 border rounded list-group-item"><input type="radio" name="payment" value="Paypal" id="payment-2" v-model="paymentMethod">
-            <label for="payment-2" class="d-inline-block mb-0 ml-2">Thanh toán qua Paypal</label>
+          <li class="mt-2 border rounded list-group-item">
+            <label for="payment-2" class="d-block mb-0">
+              <input type="radio" name="payment" value="Paypal" id="payment-2" v-model="paymentMethod">
+              <span class="d-inline-block mb-0 ml-2">Thanh toán qua Paypal</span>
+            </label>
           </li>
         </ul>
 
@@ -178,6 +184,7 @@ export default {
         formData.append('newAddress', JSON.stringify(this.newAddress));
       }
       await orderService.create(formData);
+      alert('Bạn đã đặt hàng thành công!');
       this.$store.dispatch('removeCart');
       this.$router.push({ name: 'home', params: {} });
     }
