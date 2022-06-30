@@ -36,7 +36,7 @@
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
                 <a class="text-secondary" href="#comment" @click="showComment()">Đã nhận {{paginate.total}} đánh giá</a>
                 <span class="d-inline-block mx-2 h-100 text-secondary">|</span>
-                <span class="text-secondary"> Đã bán 5</span>
+                <span class="text-secondary"> Đã bán {{mainShoe.saledQuantity}}</span>
               </div>
               <div class="row my-3">
                 <div v-for="(value, index) in getDefaultImage" :key="index" class="col-md-2 px-2">
@@ -131,13 +131,14 @@
                     <div class="row mt-3">
                       <div class="col-lg-12">
                         <div class="d-flex align-items-center" id="review">
-                          <span style="font-size: 2.0rem">{{totalReviewRating}}</span>
+                          <h4 class="text-secondary m-0">Overview: </h4>
+                          <span class="ml-3" style="font-size: 2.0rem">{{mainShoe.totalRating}}.0</span>
                           <div class="comment-rating mx-2 d-flex flex-column">
                             <div class="star text-warning ">
-                              <!-- <i v-for="i in totalReviewRating" :key="i" class="mx-1 fas fa-star"></i>
-                              <i v-for="j in (5-totalReviewRating)" :key="j" class="mx-1 far fa-star"></i> -->
+                              <i v-for="i in mainShoe.totalRating" :key="i" class="mx-1 fas fa-star"></i>
+                              <i v-for="j in (5-mainShoe.totalRating)" :key="j" class="mx-1 far fa-star"></i>
                             </div>
-                            <p class="m-0" style="font-size: 1.1rem;">{{paginate.total}} đánh giá</p>
+                            <p class="ml-1 mb-0 text-secondary" style="font-size: 1.1rem;">{{paginate.total}} đánh giá</p>
                           </div>
                         </div>
                       </div>
@@ -199,15 +200,6 @@ export default {
     },
     getSizeByColor() {
       return this.mainShoe.details.filter((value) => value.color == this.color);
-    },
-    totalReviewRating() {
-      if (!this.comments) return 0;
-      let length = this.comments.length;
-      let total = this.comments.reduce(
-        (acc, comment) => acc + comment.rating,
-        0
-      );
-      return Math.floor(total / length);
     }
   },
   components: { Shoe, Breadcrumb, Comment, SizeModal, Pagination },
@@ -224,7 +216,8 @@ export default {
         subImage: [],
         details: [],
         category: '',
-        gender: ''
+        gender: '',
+        totalRating: 0
       },
       comments: [],
       shoes: [],

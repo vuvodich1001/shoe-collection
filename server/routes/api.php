@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SocialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,3 +46,13 @@ Route::apiResource('shoes', ShoeController::class);
 Route::apiResource('brands', BrandController::class);
 
 Route::get('shoes/related-shoe/{id}', [ShoeController::class, 'getRelatedShoes']);
+
+// auth api
+Route::group(['middleware' => ['web']], function () {
+    Route::get('google/redirect', [SocialController::class, 'redirect']);
+    Route::get('google/callback', [SocialController::class, 'callback']);
+});
+
+Route::get('home', function () {
+    return 'successfully!';
+});

@@ -18,8 +18,8 @@
           <div class="form-icon text-center border-bottom p-2">
             <p>Or use a social network</p>
             <div class="h3">
-              <a class="mx-1 text-dark" href=""><i class="fa-brands fa-google-plus"></i></a>
-              <a class="mx-1 text-dark" href=""><i class="fab fa-facebook"></i></a>
+              <a class="mx-1 text-danger" @click.prevent="googleLogin()"><i class="fa-brands fa-google-plus"></i></a>
+              <a class="mx-1" href=""><i class="fab fa-facebook"></i></a>
               <a class="mx-1 text-dark" href=""><i class="fa-brands fa-github"></i></a>
             </div>
           </div>
@@ -56,6 +56,10 @@ export default {
       } else {
         this.isLoginFail = true;
       }
+    },
+    async googleLogin() {
+      let user = await this.$gAuth.signIn();
+      console.log(user);
     }
   }
 };

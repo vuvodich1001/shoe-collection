@@ -3,7 +3,7 @@
     <div class="col-lg-4">
       <div class="name-group d-flex align-items-center">
         <div class="photo bg-dark mr-3 p-2 text-light rounded-circle">
-          {{detailComment.customer.name.substring(0, 2).toUpperCase()}}
+          {{shortName}}
         </div>
         <div>
           <p class="m-0 font-weight-bold">{{detailComment.customer.name}}</p>
@@ -35,7 +35,19 @@
 <script>
 export default {
   props: ['detailComment'],
-  name: 'Comment'
+  name: 'Comment',
+  computed: {
+    shortName() {
+      let index = this.detailComment.customer.name.trim().indexOf(' ');
+      console.log(index);
+      let fname = this.detailComment.customer.name.substring(
+        index + 1,
+        index + 2
+      );
+      let lname = this.detailComment.customer.name.substring(0, 1);
+      return (lname + fname).toUpperCase();
+    }
+  }
 };
 </script>
 
