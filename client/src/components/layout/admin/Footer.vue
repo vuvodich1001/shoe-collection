@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  ẽ
+  name: 'Footer'
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <nav class="container mb-2">
-    <h3 class="pl-2 text-left" v-if="user" @click.prevent="">{{user.user.name}}</h3>
+    <!-- <h3 class="pl-2 text-left" v-if="user" @click.prevent="">{{user.user.name}}</h3> -->
   </nav>
   <nav class="container d-flex justify-content-between h3">
     <div class="navbar-left">

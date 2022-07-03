@@ -4,7 +4,9 @@
       <div class=" row">
         <div class="col-lg-3">
           <div class="logo d-flex align-items-center justify-content-center my-3 h-100">
-            <router-link to="/" class="display-4 text-dark">Store</router-link>
+            <router-link to="/" class="display-4 text-dark">
+              <img src="@/assets/logo1.png" alt="hinh anh" style="width: 150px;">
+            </router-link>
           </div>
         </div>
         <div class="col-lg-9">
